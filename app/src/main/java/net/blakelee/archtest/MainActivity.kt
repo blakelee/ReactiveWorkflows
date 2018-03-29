@@ -24,6 +24,7 @@ class MainActivity : Activity() {
         Coordinators.installBinder(container, {
             when(it.tag) {
                 R.layout.test_layout_one -> FirstCoordinator()
+                R.layout.test_layout_four -> SecondCoordinator()
                 else -> null
             }
         })
@@ -72,5 +73,13 @@ class MainActivity : Activity() {
 
         stack.push(v)
         container.addView(v)
+    }
+
+    fun popCurrent() {
+        if (stack.isNotEmpty()) {
+            val cur = stack.peek()
+            container.removeView(cur)
+            stack.pop()
+        }
     }
 }
