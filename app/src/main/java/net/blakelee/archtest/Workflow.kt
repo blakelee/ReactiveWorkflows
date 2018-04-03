@@ -1,10 +1,8 @@
 package net.blakelee.archtest
 
-import android.content.Context
 import android.view.View
 import com.squareup.coordinators.Coordinator
 import io.reactivex.Observable
-import io.reactivex.ObservableTransformer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
@@ -12,10 +10,8 @@ import kotlin.reflect.jvm.jvmName
 
 interface Workflow<in I, out R> {
     fun screen(): Observable<WorkflowScreen<*,*>>
-
     fun abort() //Destroy this workflow
 }
-
 
 class LoginWorkflow : Workflow<Unit, String>,
     LoginScreen.Events {
@@ -25,18 +21,16 @@ class LoginWorkflow : Workflow<Unit, String>,
     private val loginMessage = BehaviorSubject.create<String>()
 
     override fun screen(): Observable<WorkflowScreen<*, *>> =
-        currentScreen.map { it ->
+        currentScreen.map {
             when(it) {
                 LoginScreen.KEY -> LoginScreen(loginMessage, this)
-                else -> throw IllegalArgumentException("Unknown key " + it)
+                else -> throw IllegalArgumentException("Unknown key $it")
             }
         }
 
+    override fun abort() {}
+
     override fun onLogin(event: LoginScreen.SubmitLogin) {
-
-    }
-
-    override fun abort() {
 
     }
 }
@@ -76,29 +70,12 @@ class LoginScreen(
     data class SubmitLogin(val email: String, val password: String)
 }
 
-//class AuthViewFactory : AbstractViewFactory(
-//        listOf(
-//                bindLayout(LoginScreen.KEY, R.layout.main_layout) { screen ->
-//                    LoginCoordinator(screen as LoginScreen)
-//                }
-//        )
-//)
-
-open class AbstractViewFactory(val screens: List<Coordinator>) {
-
-    private lateinit var context: Context
-
-    companion object {
-
-//        inline fun <T: Coordinator, R, S> bindLayout(
-//                key: String,
-//                @LayoutRes id: Int,
-//                screen: (Wogit rkflowScreen<*,*>) -> Coordinator
-//                ): Coordinator {
-//            return screen.invoke(WorkflowScreen<R,S>(key, ))
-//        }
-    }
-}
+class AuthViewFactory : AbstractViewFactory(listOf(
+                bindLayout(LoginScreen.KEY, R.layout.main_layout) { screen ->
+                    LoginCoordinator(screen as LoginScreen)
+                }
+        )
+)
 
 class LoginCoordinator(private val screen: LoginScreen) : Coordinator() {
     private var disposable: Disposable = CompositeDisposable()
