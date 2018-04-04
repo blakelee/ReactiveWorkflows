@@ -39,7 +39,7 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
         this.container = container
         workflow.screen().subscribe {
             current = it
-            replaceView(screenMap[it.key]?.id)
+            pushView(screenMap[it.key]?.id)
         }
 
         Coordinators.installBinder(this.container, {
@@ -53,10 +53,12 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
         return v
     }
 
-    private fun pushView(@LayoutRes id: Int) {
-        val v = createView(id)
-        stack.push(v)
-        container.addView(v)
+    private fun pushView(@LayoutRes id: Int?) {
+        id?.let {
+            val v = createView(id)
+            stack.push(v)
+            container.addView(v)
+        }
     }
 
     private fun replaceView(@LayoutRes id: Int?) {
