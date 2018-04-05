@@ -39,7 +39,12 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
         this.container = container
         workflow.screen().subscribe {
             current = it
-            pushView(screenMap[it.key]?.id)
+            val id = screenMap[it.key]?.id
+            if (it.viewMode == WorkflowScreen.ViewMode.Push) {
+                pushView(id)
+            } else {
+                replaceView(id)
+            }
         }
 
         Coordinators.installBinder(this.container, {
