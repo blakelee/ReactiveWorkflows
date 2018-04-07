@@ -13,19 +13,13 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
     data class LayoutHolder(val key: String, @LayoutRes val id: Int, val screen: (WorkflowScreen<*, *>) -> Coordinator)
     private data class ScreenInfo(@LayoutRes val id: Int, val screen: (WorkflowScreen<*, *>) -> Coordinator)
 
-    private val screenMap: MutableMap<String, ScreenInfo> = mutableMapOf()
-    private val idMap: MutableMap<Int, String> = mutableMapOf()
-    private val stack = Stack<View>()
+    private val screenMap: Map<String, ScreenInfo> = screens.associate { it.key to ScreenInfo(it.id, it.screen) }
+
+    private val viewStack = Stack<View>()
+    private val keyStack = Stack<String>()
 
     private lateinit var current: WorkflowScreen<*,*>
     private lateinit var container: ViewGroup
-
-    init {
-        screens.forEach {
-            screenMap[it.key] = ScreenInfo(it.id, it.screen)
-            idMap[it.id] = it.key
-        }
-    }
 
     companion object {
         fun bindLayout(
@@ -39,53 +33,62 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
         this.container = container
         workflow.screen().subscribe {
             current = it
-            val id = screenMap[it.key]?.id
-            if (it.viewMode == WorkflowScreen.ViewMode.Push) {
-                pushView(id)
+
+            // if the stack already contains this key, no need to re-inflate layout, just bring it
+            // to the front of the stack
+            if (keyStack.contains(it.key)) {
+                val index = keyStack.indexOf(it.key)
+
+                val v = viewStack[index]
+                v.bringToFront()
+
+                keyStack.removeElementAt(index)
+                viewStack.removeElementAt(index)
+
+                keyStack.push(it.key)
+                viewStack.push(v)
             } else {
-                replaceView(id)
+                when (it.viewMode) {
+                    WorkflowScreen.ViewMode.Push -> pushView(it.key)
+                    WorkflowScreen.ViewMode.Replace -> replaceView(it.key)
+                }
             }
         }
 
         Coordinators.installBinder(this.container, {
-            screenMap[idMap[it.tag]]?.screen?.invoke(current)
+            screenMap[it.tag]?.screen?.invoke(current)
         })
     }
 
-    private fun createView(@LayoutRes id: Int): View {
-        val v = LayoutInflater.from(container.context).inflate(id, container, false)
-        v.tag = id
-        return v
-    }
-
-    private fun pushView(@LayoutRes id: Int?) {
-        id?.let {
-            val v = createView(id)
-            stack.push(v)
-            container.addView(v)
+    private fun createView(key: String): View? =
+        screenMap[key]?.id?.let {
+            val v = LayoutInflater.from(container.context).inflate(it, container, false)
+            v.tag = key
+            return v
         }
-    }
 
-    private fun replaceView(@LayoutRes id: Int?) {
-        id?.let {
-            val v = createView(id)
+    private fun pushView(key: String): Boolean = createView(key)?.let { view ->
+        addView(view, key)
+    } ?: false
 
-            if (stack.isNotEmpty()) {
-                val prev = stack.peek()
-                container.removeView(prev)
-                stack.pop()
-            }
+    private fun replaceView(key: String): Boolean = createView(key)?.let { view ->
+        popCurrent()
+        addView(view, key)
+    } ?: false
 
-            stack.push(v)
-            container.addView(v)
-        }
+    private fun addView(view: View, key: String): Boolean {
+        viewStack.push(view)
+        keyStack.push(key)
+        container.addView(view)
+        return true
     }
 
     private fun popCurrent() {
-        if (stack.isNotEmpty()) {
-            val cur = stack.peek()
+        if (viewStack.isNotEmpty()) {
+            val cur = viewStack.peek()
             container.removeView(cur)
-            stack.pop()
+            viewStack.pop()
+            keyStack.pop()
         }
     }
 }

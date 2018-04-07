@@ -16,4 +16,6 @@ class SecondScreen(
     interface Events {
         fun secondTest()
     }
+
+    init { viewMode = ViewMode.Push }
 }

@@ -16,4 +16,6 @@ class FirstScreen(
     interface Events {
         fun firstEvents()
     }
+
+    init { viewMode = ViewMode.Push }
 }

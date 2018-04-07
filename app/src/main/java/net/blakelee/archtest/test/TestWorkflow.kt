@@ -25,7 +25,6 @@ class TestWorkflow : Workflow<Unit, Unit>,
         testViewFactory = TestViewFactory()
         testViewFactory.create(this, container)
         currentScreen.onNext(FirstScreen.KEY)
-        currentScreen.onNext(SecondScreen.KEY)
     }
 
     override fun screen(): Observable<WorkflowScreen<*, *>> =
@@ -38,11 +37,11 @@ class TestWorkflow : Workflow<Unit, Unit>,
             }
 
     override fun firstEvents() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        currentScreen.onNext(SecondScreen.KEY)
     }
 
     override fun secondTest() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        currentScreen.onNext(FirstScreen.KEY)
     }
 
     override fun abort() {}

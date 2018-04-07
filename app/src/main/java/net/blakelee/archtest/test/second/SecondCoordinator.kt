@@ -2,7 +2,7 @@ package net.blakelee.archtest.test.second
 
 import android.view.View
 import com.squareup.coordinators.Coordinator
-import kotlinx.android.synthetic.main.test_layout_four.view.*
+import kotlinx.android.synthetic.main.test_layout_two.view.*
 import net.blakelee.archtest.MainActivity
 
 class SecondCoordinator(private val screen: SecondScreen) : Coordinator() {
@@ -11,5 +11,7 @@ class SecondCoordinator(private val screen: SecondScreen) : Coordinator() {
 
     override fun attach(view: View) {
         activity = view.context as MainActivity
+
+        view.button.setOnClickListener { screen.eventHandler.secondTest() }
     }
 }
