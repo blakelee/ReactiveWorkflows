@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.squareup.coordinators.Coordinator
 import com.squareup.coordinators.Coordinators
+import io.reactivex.disposables.Disposable
 import java.util.*
 
 open class AbstractViewFactory(screens: List<LayoutHolder>) {
@@ -20,6 +21,7 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
 
     private lateinit var current: WorkflowScreen<*,*>
     private lateinit var container: ViewGroup
+    private var disposable: Disposable? = null
 
     companion object {
         fun bindLayout(
@@ -29,9 +31,9 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
         ) = LayoutHolder(key, id, screen)
     }
 
-    fun create(workflow: Workflow<*,*>, container: ViewGroup) {
-        this.container = container
-        workflow.screen().subscribe {
+    fun start(workflow: Workflow<*,*>) {
+        this.container = App.container
+        disposable = workflow.screen().subscribe {
             current = it
 
             // if the stack already contains this key, no need to re-inflate layout, just bring it
@@ -58,6 +60,13 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
         Coordinators.installBinder(this.container, {
             screenMap[it.tag]?.screen?.invoke(current)
         })
+    }
+
+    fun abort() {
+        disposable?.dispose()
+        while(viewStack.isNotEmpty()) {
+            popCurrent()
+        }
     }
 
     private fun createView(key: String): View? =

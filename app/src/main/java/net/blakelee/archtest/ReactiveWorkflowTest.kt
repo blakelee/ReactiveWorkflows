@@ -8,27 +8,27 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlin.reflect.jvm.jvmName
 
-class LoginWorkflow : Workflow<Unit, String>,
-        LoginScreen.Events {
-
-    private val currentScreen = BehaviorSubject.create<String>()
-
-    private val loginMessage = BehaviorSubject.create<String>()
-
-    override fun screen(): Observable<WorkflowScreen<*, *>> =
-            currentScreen.map {
-                when(it) {
-                    LoginScreen.KEY -> LoginScreen(loginMessage, this)
-                    else -> throw IllegalArgumentException("Unknown key $it")
-                }
-            }
-
-    override fun abort() {}
-
-    override fun onLogin(event: LoginScreen.SubmitLogin) {
-
-    }
-}
+//class LoginWorkflow : Workflow<Unit, String>,
+//        LoginScreen.Events {
+//
+//    private val currentScreen = BehaviorSubject.create<String>()
+//
+//    private val loginMessage = BehaviorSubject.create<String>()
+//
+//    override fun screen(): Observable<WorkflowScreen<*, *>> =
+//            currentScreen.map {
+//                when(it) {
+//                    LoginScreen.KEY -> LoginScreen(loginMessage, this)
+//                    else -> throw IllegalArgumentException("Unknown key $it")
+//                }
+//            }
+//
+//    override fun abort() {}
+//
+//    override fun onLogin(event: LoginScreen.SubmitLogin) {
+//
+//    }
+//}
 
 class GameRunner {
     sealed class Command {

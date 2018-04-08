@@ -1,31 +1,35 @@
 package net.blakelee.archtest.test
 
-import android.view.ViewGroup
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import net.blakelee.archtest.Workflow
-import net.blakelee.archtest.WorkflowScreen
+import net.blakelee.archtest.*
+import net.blakelee.archtest.FiniteStateMachine.Companion.onEntry
+import net.blakelee.archtest.FiniteStateMachine.Companion.transition
 import net.blakelee.archtest.test.first.FirstScreen
 import net.blakelee.archtest.test.second.SecondScreen
+
+internal enum class State {
+    FIRST_SCREEN, SECOND_SCREEN
+}
 
 class TestWorkflow : Workflow<Unit, Unit>,
     FirstScreen.Events, SecondScreen.Events {
 
-    private lateinit var testViewFactory: TestViewFactory
-    private lateinit var container: ViewGroup
+
+
+    override var viewFactory: AbstractViewFactory = TestViewFactory()
 
     private val currentScreen = BehaviorSubject.create<String>()
 
     private val firstMessage = BehaviorSubject.create<String>()
     private val secondMessage = BehaviorSubject.create<String>()
 
+    override var stateMachine = FiniteStateMachine(
+            State.FIRST_SCREEN,
 
-    fun create(container: ViewGroup) {
-        this.container = container
-        testViewFactory = TestViewFactory()
-        testViewFactory.create(this, container)
-        currentScreen.onNext(FirstScreen.KEY)
-    }
+            transition(State.FIRST_SCREEN, Nothing::class, State.SECOND_SCREEN),
+            onEntry(State.FIRST_SCREEN) { currentScreen.onNext(FirstScreen.KEY) }
+    )
 
     override fun screen(): Observable<WorkflowScreen<*, *>> =
             currentScreen.map {
@@ -43,6 +47,4 @@ class TestWorkflow : Workflow<Unit, Unit>,
     override fun secondTest() {
         currentScreen.onNext(FirstScreen.KEY)
     }
-
-    override fun abort() {}
 }
