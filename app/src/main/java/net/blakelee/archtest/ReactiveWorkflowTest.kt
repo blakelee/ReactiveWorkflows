@@ -5,7 +5,6 @@ import com.squareup.coordinators.Coordinator
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.BehaviorSubject
 import kotlin.reflect.jvm.jvmName
 
 //class LoginWorkflow : Workflow<Unit, String>,
