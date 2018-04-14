@@ -11,9 +11,6 @@ class FiniteStateMachine(
 
     private val entry = mutableMapOf<Any, () -> Unit>()
 
-    /** This needs to be map<any, map<any, map<any, event>>> so that we can pass in multiple
-     *  different types for the same transition
-     */
     private val transition = mutableMapOf<Any, MutableMap<Any, EventComposition<Any>>>()
 
     init {
@@ -21,15 +18,14 @@ class FiniteStateMachine(
             when (event) {
                 is Events.Entry -> entry[event.state] = event.action
                 is Events.Transition<*> -> with(event as Events.Transition<Any>) {
-
-                        if (!transition.containsKey(from)) {
-                            transition[from] = mutableMapOf()
-                        }
-
-                        transition[from]?.let { type ->
-                            type[clazz] = EventComposition(to, onlyIf, doAction)
-                        }
+                    if (!transition.containsKey(from)) {
+                        transition[from] = mutableMapOf()
                     }
+
+                    transition[from]?.let { type ->
+                        type[clazz] = EventComposition(to, onlyIf, doAction)
+                    }
+                }
             }
         }
 

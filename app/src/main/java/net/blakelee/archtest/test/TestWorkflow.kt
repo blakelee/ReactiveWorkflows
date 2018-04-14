@@ -1,6 +1,5 @@
 package net.blakelee.archtest.test
 
-import android.util.Log
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import net.blakelee.archtest.*
@@ -25,13 +24,8 @@ class TestWorkflow : Workflow<Unit, Unit>,
     override var stateMachine = FiniteStateMachine(
             State.FIRST_SCREEN,
 
-            transition(State.FIRST_SCREEN, Integer::class, State.SECOND_SCREEN)
-                    .onlyIf { it == it }
-                    .doAction { Log.i("TRANSITION", "${State.FIRST_SCREEN} to ${State.SECOND_SCREEN}") },
-            transition(State.SECOND_SCREEN, Integer::class, State.FIRST_SCREEN)
-                    .doAction { it ->
-                        Log.i("TRANSITION", "${State.SECOND_SCREEN} to ${State.FIRST_SCREEN}")
-                    },
+            transition(State.FIRST_SCREEN, Integer::class, State.SECOND_SCREEN) ,
+            transition(State.SECOND_SCREEN, Integer::class, State.FIRST_SCREEN),
             onEntry(State.FIRST_SCREEN) { currentScreen.onNext(FirstScreen.KEY) },
             onEntry(State.SECOND_SCREEN) { currentScreen.onNext(SecondScreen.KEY) }
     )
