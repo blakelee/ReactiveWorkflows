@@ -10,7 +10,7 @@ class LoginScreen(
 ) : WorkflowScreen<String, LoginScreen.Events>(KEY, errorMessage, errorHandler) {
 
     companion object {
-        val KEY = Key(this)
+        val KEY = Key(LoginScreen)
     }
 
     interface Events {

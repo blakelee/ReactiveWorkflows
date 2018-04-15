@@ -44,6 +44,10 @@ class TicTacToeWorkflow(
         }
     }
 
+    override fun makeMove() {
+
+    }
+
     override fun screen(): Observable<WorkflowScreen<*, *>> = screen
 
     override val viewFactory: AbstractViewFactory = TicTacToeViewFactory()

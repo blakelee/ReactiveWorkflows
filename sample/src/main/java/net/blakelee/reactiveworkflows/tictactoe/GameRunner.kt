@@ -48,15 +48,15 @@ class GameRunner {
     private fun restoreGame(restoreGame: Command.RestoreGame) = newGame()
 
     private fun takeSquare(takeSquare: Command.TakeSquare): GameState {
-
+        return GameState.newGame("", Player("", ""), Player("", ""))
     }
 
     private fun newGame(newGame: Command.NewGame): GameState {
-
+        return GameState.newGame("", Player("", ""), Player("", ""))
     }
 
     private fun end(end: Command.End): GameState {
-
+        return GameState.newGame("", Player("", ""), Player("", ""))
     }
 
 

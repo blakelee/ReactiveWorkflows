@@ -8,5 +8,5 @@ class AuthorizingScreen(
         val title: Observable<String>
 ) : WorkflowScreen<String, Unit>(KEY, title, Unit) {
 
-    companion object { val KEY = Key(this) }
+    companion object { val KEY = Key(AuthorizingScreen) }
 }

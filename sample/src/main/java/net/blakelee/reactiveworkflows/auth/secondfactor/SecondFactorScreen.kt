@@ -9,7 +9,10 @@ class SecondFactorScreen(
         handler: Events
 ) : WorkflowScreen<String, SecondFactorScreen.Events>(KEY, title, handler) {
 
-    companion object { val KEY = Key(this) }
-    interface Events
+    companion object { val KEY = Key(SecondFactorScreen) }
+    interface Events {
+        fun onSecondFactor(event: SecondFactor)
+    }
 
+    data class SecondFactor(val token: String)
 }

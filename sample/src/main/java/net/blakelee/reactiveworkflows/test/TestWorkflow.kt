@@ -16,12 +16,12 @@ class TestWorkflow : Workflow<Unit, Unit>,
     FirstScreen.Events, SecondScreen.Events {
 
     override var viewFactory: AbstractViewFactory = TestViewFactory()
-    override var currentScreen: BehaviorSubject<Key> = BehaviorSubject.create()
+    var currentScreen: BehaviorSubject<Key> = BehaviorSubject.create()
 
     private val firstMessage = BehaviorSubject.create<String>()
     private val secondMessage = BehaviorSubject.create<String>()
 
-    override var stateMachine = FiniteStateMachine(
+    var stateMachine = FiniteStateMachine(
             transition(State.FIRST_SCREEN, Integer::class, State.SECOND_SCREEN) ,
             transition(State.SECOND_SCREEN, Integer::class, State.FIRST_SCREEN),
             onEntry(State.FIRST_SCREEN) { currentScreen.onNext(FirstScreen.KEY) },
@@ -38,10 +38,10 @@ class TestWorkflow : Workflow<Unit, Unit>,
             }
 
     override fun firstEvents() {
-        event(1)
+        stateMachine.event(1)
     }
 
     override fun secondTest() {
-        event(2)
+        stateMachine.event(2)
     }
 }

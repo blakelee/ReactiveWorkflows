@@ -1,5 +1,5 @@
 package net.blakelee.library
 
 data class Key(val value: String) {
-    constructor(name: Any) : this(name::class.simpleName ?: "Anonymous")
+    constructor(name: Any) : this(name.toString())
 }
