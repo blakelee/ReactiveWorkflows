@@ -1,4 +1,4 @@
-package net.blakelee.archtest.test
+package net.blakelee.reactiveworkflows.test
 
 import io.reactivex.Observable
 

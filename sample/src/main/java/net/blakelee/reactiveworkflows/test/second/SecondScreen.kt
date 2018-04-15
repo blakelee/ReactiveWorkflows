@@ -1,20 +1,20 @@
-package net.blakelee.archtest.test.first
+package net.blakelee.reactiveworkflows.test.second
 
 import io.reactivex.Observable
+import net.blakelee.library.Key
 import net.blakelee.library.WorkflowScreen
-import kotlin.reflect.jvm.jvmName
 
-class FirstScreen(
+class SecondScreen(
         title: Observable<String>,
         handler: Events
-) : WorkflowScreen<String, FirstScreen.Events>(KEY, title, handler) {
+) : WorkflowScreen<String, SecondScreen.Events>(KEY, title, handler) {
 
     companion object {
-        val KEY = FirstScreen::class.jvmName
+        val KEY = Key(this)
     }
 
     interface Events {
-        fun firstEvents()
+        fun secondTest()
     }
 
     init { viewMode = ViewMode.Push }

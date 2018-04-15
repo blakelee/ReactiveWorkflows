@@ -1,4 +1,4 @@
-package net.blakelee.archtest
+package net.blakelee.reactiveworkflows
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4

@@ -1,15 +1,12 @@
-package net.blakelee.archtest.test
+package net.blakelee.reactiveworkflows.test
 
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import net.blakelee.archtest.test.first.FirstScreen
-import net.blakelee.archtest.test.second.SecondScreen
-import net.blakelee.library.AbstractViewFactory
-import net.blakelee.library.FiniteStateMachine
+import net.blakelee.library.*
+import net.blakelee.reactiveworkflows.test.first.FirstScreen
+import net.blakelee.reactiveworkflows.test.second.SecondScreen
 import net.blakelee.library.FiniteStateMachine.Companion.onEntry
 import net.blakelee.library.FiniteStateMachine.Companion.transition
-import net.blakelee.library.Workflow
-import net.blakelee.library.WorkflowScreen
 
 internal enum class State {
     FIRST_SCREEN, SECOND_SCREEN
@@ -19,14 +16,12 @@ class TestWorkflow : Workflow<Unit, Unit>,
     FirstScreen.Events, SecondScreen.Events {
 
     override var viewFactory: AbstractViewFactory = TestViewFactory()
-    override var currentScreen: BehaviorSubject<String> = BehaviorSubject.create<String>()
+    override var currentScreen: BehaviorSubject<Key> = BehaviorSubject.create()
 
     private val firstMessage = BehaviorSubject.create<String>()
     private val secondMessage = BehaviorSubject.create<String>()
 
     override var stateMachine = FiniteStateMachine(
-            State.FIRST_SCREEN,
-
             transition(State.FIRST_SCREEN, Integer::class, State.SECOND_SCREEN) ,
             transition(State.SECOND_SCREEN, Integer::class, State.FIRST_SCREEN),
             onEntry(State.FIRST_SCREEN) { currentScreen.onNext(FirstScreen.KEY) },

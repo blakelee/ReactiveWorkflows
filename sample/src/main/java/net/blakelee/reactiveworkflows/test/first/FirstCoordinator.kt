@@ -1,4 +1,4 @@
-package net.blakelee.archtest.test.first
+package net.blakelee.reactiveworkflows.test.first
 
 import android.graphics.Color
 import android.view.View
@@ -8,7 +8,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolygonOptions
 import com.squareup.coordinators.Coordinator
 import kotlinx.android.synthetic.main.test_layout_one.view.*
-import net.blakelee.archtest.MainActivity
+import net.blakelee.reactiveworkflows.MainActivity
 
 class FirstCoordinator(private val screen: FirstScreen) : Coordinator(),
     OnMapReadyCallback {

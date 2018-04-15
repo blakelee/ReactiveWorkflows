@@ -11,13 +11,13 @@ import java.util.*
 
 open class AbstractViewFactory(screens: List<LayoutHolder>) {
 
-    data class LayoutHolder(val key: String, @LayoutRes val id: Int, val screen: (WorkflowScreen<*, *>) -> Coordinator)
+    data class LayoutHolder(val key: Key, @LayoutRes val id: Int, val screen: (WorkflowScreen<*, *>) -> Coordinator)
     private data class ScreenInfo(@LayoutRes val id: Int, val screen: (WorkflowScreen<*, *>) -> Coordinator)
 
-    private val screenMap: Map<String, ScreenInfo> = screens.associate { it.key to ScreenInfo(it.id, it.screen) }
+    private val screenMap: Map<Key, ScreenInfo> = screens.associate { it.key to ScreenInfo(it.id, it.screen) }
 
     private val viewStack = Stack<View>()
-    private val keyStack = Stack<String>()
+    private val keyStack = Stack<Key>()
 
     private lateinit var current: WorkflowScreen<*,*>
     private lateinit var container: ViewGroup
@@ -25,7 +25,7 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
 
     companion object {
         fun bindLayout(
-                key: String,
+                key: Key,
                 @LayoutRes id: Int,
                 screen: (WorkflowScreen<*, *>) -> Coordinator
         ) = LayoutHolder(key, id, screen)
@@ -69,23 +69,23 @@ open class AbstractViewFactory(screens: List<LayoutHolder>) {
         }
     }
 
-    private fun createView(key: String): View? =
+    private fun createView(key: Key): View? =
         screenMap[key]?.id?.let {
             val v = LayoutInflater.from(container.context).inflate(it, container, false)
             v.tag = key
             return v
         }
 
-    private fun pushView(key: String): Boolean = createView(key)?.let { view ->
+    private fun pushView(key: Key): Boolean = createView(key)?.let { view ->
         addView(view, key)
     } ?: false
 
-    private fun replaceView(key: String): Boolean = createView(key)?.let { view ->
+    private fun replaceView(key: Key): Boolean = createView(key)?.let { view ->
         popCurrent()
         addView(view, key)
     } ?: false
 
-    private fun addView(view: View, key: String): Boolean {
+    private fun addView(view: View, key: Key): Boolean {
         viewStack.push(view)
         keyStack.push(key)
         container.addView(view)
