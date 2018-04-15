@@ -26,8 +26,9 @@ class AuthWorkflow : Workflow<Unit, String>,
     private val secondFactorMessage = BehaviorSubject.create<String>()
 
     private val result = MaybeSubject.create<String>()
-
     override fun result(): Maybe<out String> = result
+
+    override fun back() { stateMachine.event(Back) }
 
     override fun screen(): Observable<WorkflowScreen<*, *>> =
             currentScreen.map { key ->
@@ -68,7 +69,8 @@ class AuthWorkflow : Workflow<Unit, String>,
                     },
             transition(State.AUTHORIZING, Unit::class, State.SECOND_FACTOR_PROMPT),
             transition(State.SECOND_FACTOR_PROMPT, SecondFactorScreen.SecondFactor::class, State.DONE)
-                    .onlyIf { isSecondFactorSuccess(it) }
+                    .onlyIf { isSecondFactorSuccess(it) },
+            transition(State.SECOND_FACTOR_PROMPT, Back::class, State.LOGIN_PROMPT)
 
     )
 

@@ -1,7 +1,6 @@
 package net.blakelee.reactiveworkflows.tictactoe
 
 import io.reactivex.Observable
-import io.reactivex.observables.ConnectableObservable
 import io.reactivex.rxkotlin.Observables
 import io.reactivex.subjects.BehaviorSubject
 import net.blakelee.library.AbstractViewFactory

@@ -6,3 +6,5 @@ import android.view.ViewGroup
 object App {
     lateinit var container: ViewGroup
 }
+
+object Back
