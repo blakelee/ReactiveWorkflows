@@ -13,6 +13,9 @@ import net.blakelee.reactiveworkflows.auth.login.LoginScreen
 import net.blakelee.reactiveworkflows.auth.secondfactor.SecondFactorScreen
 import java.util.concurrent.TimeUnit
 
+private val email = "blake@blakelee.net"
+private val password = "password"
+
 class AuthWorkflow : Workflow<Unit, String>,
     LoginScreen.Events, SecondFactorScreen.Events {
 
@@ -70,15 +73,20 @@ class AuthWorkflow : Workflow<Unit, String>,
     )
 
     private fun doLogin(submitLogin: LoginScreen.SubmitLogin) {
-        authorizingMessage.onNext("logging in")
-        Observable.timer(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe {
-            if (submitLogin.email == "blake@blakelee.net" &&
-                    submitLogin.password == "password") {
+        val d = Observable.interval(0, 333, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    val dots = ".".repeat(it.toInt() % 4)
+                    authorizingMessage.onNext("logging in$dots")
+                }
 
+        Observable.timer(3, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe {
+            if (submitLogin.email == email && submitLogin.password == password) {
                 stateMachine.event(AuthResponse("success"))
             } else {
                 stateMachine.event(AuthResponse("wrong username/password"))
             }
+            d.dispose()
         }
     }
 
