@@ -1,4 +1,4 @@
-package net.blakelee.archtest
+package net.blakelee.reactiveworkflows
 
 import org.junit.Test
 

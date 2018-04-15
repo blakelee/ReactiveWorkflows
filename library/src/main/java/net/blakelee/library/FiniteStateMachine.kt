@@ -2,12 +2,9 @@ package net.blakelee.library
 
 import kotlin.reflect.KClass
 
-class FiniteStateMachine(
-        initialState: Any,
-        vararg events: Events
-) {
+class FiniteStateMachine(vararg events: Events) {
 
-    var currentState: Any = initialState
+    private lateinit var currentState: Any
 
     private val entry = mutableMapOf<Any, () -> Unit>()
 
@@ -28,7 +25,10 @@ class FiniteStateMachine(
                 }
             }
         }
+    }
 
+    fun start(initialState: Any) {
+        currentState = initialState
         entry[currentState]?.invoke()
     }
 

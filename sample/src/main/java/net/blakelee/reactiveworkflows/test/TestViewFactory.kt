@@ -1,10 +1,10 @@
-package net.blakelee.archtest.test
+package net.blakelee.reactiveworkflows.test
 
-import net.blakelee.archtest.R
-import net.blakelee.archtest.test.first.FirstCoordinator
-import net.blakelee.archtest.test.first.FirstScreen
-import net.blakelee.archtest.test.second.SecondCoordinator
-import net.blakelee.archtest.test.second.SecondScreen
+import net.blakelee.reactiveworkflows.R
+import net.blakelee.reactiveworkflows.test.first.FirstCoordinator
+import net.blakelee.reactiveworkflows.test.first.FirstScreen
+import net.blakelee.reactiveworkflows.test.second.SecondCoordinator
+import net.blakelee.reactiveworkflows.test.second.SecondScreen
 import net.blakelee.library.AbstractViewFactory
 
 class TestViewFactory : AbstractViewFactory(listOf(
